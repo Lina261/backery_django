@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h3 class="text=cemter mt-5 mb-5">Ваш заказ {% if not cart.product.count %} пуста {% endif %}</h3>
+{% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
+{% endif %}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Наименование</th>
+      <th scope="col">Вид</th>
+      <th scope="col">Цена</th>
+      <th scope="col">Количество</th>
+      <th scope="col">Сумма</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in cart.product.all %}
+    <tr>
+      <th scope="row">{{ item.content_object.title }}</th>
+      <td class="w-25"><img src ="{{ item.content_object.image.url }}" class="img-fluid" </td>
+      <td>{{ item.content_object.price }} руб. </td>
+      <td>{{ item.content_object.price }} руб. </td>
+      <td>{{ item.total_price }} руб.</td>
+    
+      
+    </tr>
+    {% endfor %}
+    <tr>
+    <td colspan="2"></td>
+    <td>Итого:</td>
+    <td>{{ cart.total_products }}</td>
+    <td><strong>{{ cart.total_price }} руб.</strong></td>
+    
+
+
+    </tr>
+  </tbody>
+</table>
+<hr>
+<h3 class="text=cemter mt-5 mb-5">Оформление заказа</h3>
+<form action="{% url 'make_order' %}" method="POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" class="btn btn-success btn-block mb-3" values="Оформить заказ">
+</form>
+{% endblock content%}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3 class="text=cemter mt-5 mb-5">Ваша корзина {% if not cart.product.count %} пуста {% endif %}</h3>
+
+{% if cart.product.count %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Наименование</th>
+      <th scope="col">Вид</th>
+      <th scope="col">Цена</th>
+      <th scope="col">Количество</th>
+      <th scope="col">Сумма</th>
+      <th scope="col">Редактирование</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in cart.product.all %}
+    <tr>
+      <th scope="row">{{ item.content_object.title }}</th>
+      <td class="w-25"><img src ="{{ item.content_object.image.url }}" class="img-fluid" </td>
+      <td>{{ item.content_object.price }} руб. </td>
+      <td>
+        <form action="{% url 'change_count' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}" method="POST">
+        {% csrf_token %}
+        <input type="number" class="form-control" name="count" style="width: 80px" min="1" value="{{ item.count }}">
+        <input type="submit" class="btn btn-primary" value="Изменить количество">
+      </form>
+      </td>
+      <td>{{ item.total_price }} руб.</td>
+      <td>
+      <a href =' {% url 'delete_from_cart' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}'><button class="btn btn-info">Удалить из корзины</button></a>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+    <td colspan="2"></td>
+    <td>Итого:</td>
+    <td>{{ cart.total_products }}</td>
+    <td><strong>{{ cart.total_price }} руб.</strong></td>
+    <td><a href="{% url 'order' %}"><button class="btn btn-primary">Заказать</button></a></td>
+
+
+    </tr>
+  </tbody>
+</table>
+{% endif %}
+{% endblock content %}
